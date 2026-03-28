@@ -11,11 +11,15 @@ const COUNT = 8000
 
 const PARAMS = { emergence: 0.6, scale: 3.5, speed: 0.8, detail: 4 }
 
+// Burst phase: starts at 3.2 (particles form huge sphere), decays to 1 (normal size)
+// Resets each module load (page load), decays over ~120 frames ≈ 2s at 60fps
+let burstPhase = 3.2
+
 export default function ParticleField() {
   const pointsRef = useRef<THREE.Points>(null)
 
-  // Pre-compute stable spherical coords once
   const { inclinations, azimuths, posArr, colArr } = useMemo(() => {
+    burstPhase = 3.2 // reset on mount
     const golden = 2.3999632297
     const inclinations = new Float32Array(COUNT)
     const azimuths = new Float32Array(COUNT)
@@ -24,10 +28,10 @@ export default function ParticleField() {
     for (let i = 0; i < COUNT; i++) {
       inclinations[i] = Math.acos(1.0 - 2.0 * (i + 0.5) / COUNT)
       azimuths[i] = golden * i
-      // initial scatter
-      posArr[i * 3]     = (Math.random() - 0.5) * 8
-      posArr[i * 3 + 1] = (Math.random() - 0.5) * 8
-      posArr[i * 3 + 2] = (Math.random() - 0.5) * 8
+      // start clustered at center — explosion flies outward
+      posArr[i * 3]     = (Math.random() - 0.5) * 0.4
+      posArr[i * 3 + 1] = (Math.random() - 0.5) * 0.4
+      posArr[i * 3 + 2] = (Math.random() - 0.5) * 0.4
     }
     return { inclinations, azimuths, posArr, colArr }
   }, [])
@@ -41,6 +45,9 @@ export default function ParticleField() {
     const time = state.clock.getElapsedTime()
     const { emergence, scale, speed, detail } = PARAMS
     const st = time * speed
+
+    // Decay burst: 3.2 → 1.0 over ~120 frames
+    if (burstPhase > 1.0) burstPhase = Math.max(1.0, burstPhase - 0.018)
 
     const c1 = Math.cos(st * 0.12), s1 = Math.sin(st * 0.12)
     const c2 = Math.cos(st * 0.08), s2 = Math.sin(st * 0.08)
@@ -61,7 +68,7 @@ export default function ParticleField() {
 
       const tendrilPhase = Math.sin(azimuth * 3.0 + st * 0.3) * Math.sin(inclination * 5.0 + st * 0.4)
       const tendril = Math.pow(Math.max(0.0, tendrilPhase), 6.0) * emergence
-      const r = scale * (1.0 + noise * 0.5) + tendril * scale * 0.8
+      const r = (scale * (1.0 + noise * 0.5) + tendril * scale * 0.8) * burstPhase
 
       const px = ux * r, py = uy * r, pz = uz * r
       const rx = px * c1 - pz * s1
@@ -73,11 +80,12 @@ export default function ParticleField() {
       const ty = ry * breath
       const tz = rz * breath
 
-      // Lerp current → target directly in the Float32Array
+      // Lerp current → target — faster during burst explosion
+      const lerpSpeed = burstPhase > 1.0 ? 0.14 : 0.08
       const i3 = i * 3
-      posArr[i3]     += (tx - posArr[i3])     * 0.08
-      posArr[i3 + 1] += (ty - posArr[i3 + 1]) * 0.08
-      posArr[i3 + 2] += (tz - posArr[i3 + 2]) * 0.08
+      posArr[i3]     += (tx - posArr[i3])     * lerpSpeed
+      posArr[i3 + 1] += (ty - posArr[i3 + 1]) * lerpSpeed
+      posArr[i3 + 2] += (tz - posArr[i3 + 2]) * lerpSpeed
 
       const t = i / COUNT
       const hue = (0.55 + t * 0.35 + noise * 0.15 + st * 0.015) % 1.0
