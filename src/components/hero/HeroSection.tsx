@@ -62,7 +62,7 @@ export default function HeroSection() {
         {/* Name */}
         <motion.h1 variants={enter(0.45)} style={{ margin: '0 0 1.75rem', lineHeight: 1 }}>
           <span style={{ display: 'block', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 'clamp(2.2rem, 8vw, 7rem)', color: 'var(--text-1)', letterSpacing: '-0.03em', lineHeight: 1 }}>Building ideas</span>
-          <span style={{ display: 'block', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 'clamp(2.2rem, 8vw, 7rem)', color: 'var(--text-1)', letterSpacing: '-0.03em', lineHeight: 1 }}>into reality.</span>
+          <span style={{ display: 'block', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: 'clamp(2.2rem, 8vw, 7rem)', color: 'var(--text-1)', letterSpacing: '-0.03em', lineHeight: 1 }}>into reality</span>
           <span style={{
             display: 'block',
             width: 'clamp(40px, 8vw, 80px)',
