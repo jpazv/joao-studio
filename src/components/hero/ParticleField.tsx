@@ -46,9 +46,8 @@ export default function ParticleField() {
     const { emergence, scale, speed, detail } = PARAMS
     const st = time * speed
 
-    // Spring-damped decay toward 1.0 — settles with the wave rhythm, no hard stop
-    burstVel  = (burstVel + (1.0 - burstPhase) * 0.016) * 0.93
-    burstPhase += burstVel
+    // Exponential decay toward 1.0 — smooth, no bounce
+    burstPhase += (1.0 - burstPhase) * 0.018
 
     const c1 = Math.cos(st * 0.12), s1 = Math.sin(st * 0.12)
     const c2 = Math.cos(st * 0.08), s2 = Math.sin(st * 0.08)
