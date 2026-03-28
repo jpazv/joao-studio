@@ -16,8 +16,15 @@ export default function Navbar() {
   }, [])
 
   const go = (href: string) => {
-    setActive(href); setMenuOpen(false)
-    document.getElementById(href.replace('#', ''))?.scrollIntoView({ behavior: 'smooth' })
+    setActive(href)
+    if (menuOpen) {
+      setMenuOpen(false)
+      setTimeout(() => {
+        document.getElementById(href.replace('#', ''))?.scrollIntoView({ behavior: 'smooth' })
+      }, 280)
+    } else {
+      document.getElementById(href.replace('#', ''))?.scrollIntoView({ behavior: 'smooth' })
+    }
   }
 
   return (
@@ -80,7 +87,7 @@ export default function Navbar() {
             </button>
           ))}
 
-          <a href="mailto:joao@email.com"
+          <a href="mailto:jpazevedomoreiraa@gmail.com"
             style={{
               fontFamily: 'var(--font-sans)', fontWeight: 500,
               fontSize: '0.825rem',
@@ -108,16 +115,17 @@ export default function Navbar() {
         {/* Mobile hamburger */}
         <button className="flex md:hidden flex-col gap-1.5"
           onClick={() => setMenuOpen(!menuOpen)}
-          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '6px' }}
+          style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '6px', position: 'relative', zIndex: 1002 }}
         >
           {[0,1,2].map(i => (
             <motion.span key={i}
               animate={{
                 rotate: menuOpen ? (i===0?45:i===2?-45:0) : 0,
-                y: menuOpen ? (i===0?8:i===2?-8:0) : 0,
+                y: menuOpen ? (i===0?7.5:i===2?-7.5:0) : 0,
                 opacity: menuOpen && i===1 ? 0 : 1,
               }}
-              style={{ display: 'block', width: 18, height: 1.5, background: 'var(--text-2)', transformOrigin: 'center' }}
+              transition={{ duration: 0.22, ease: [0.16,1,0.3,1] }}
+              style={{ display: 'block', width: 20, height: 1.5, background: menuOpen ? 'var(--text-1)' : 'var(--text-2)', transformOrigin: 'center', borderRadius: '2px' }}
             />
           ))}
         </button>
@@ -128,12 +136,13 @@ export default function Navbar() {
         {menuOpen && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            transition={{ duration: 0.22 }}
             style={{
               position: 'fixed', inset: 0,
-              background: 'rgba(8,5,16,0.92)',
+              background: 'rgba(8,5,16,0.95)',
               backdropFilter: 'blur(24px) saturate(160%)',
               WebkitBackdropFilter: 'blur(24px) saturate(160%)',
-              zIndex: 999,
+              zIndex: 1001,
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center', gap: '2rem',
             }}

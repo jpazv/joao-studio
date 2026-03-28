@@ -30,11 +30,18 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
+    id: 'rift',
+    name: 'Rift',
+    description: 'Gamified training app inspired by Solo Leveling. AI reads your personal trainer sheet and tracks your progress. Connect with Apple Health, form guilds, compete on leaderboards, and share daily workout photos with your crew.',
+    tags: ['React Native', 'Health API', 'Claude AI', 'TypeScript', 'Gamification'],
+    link: 'https://github.com/jpazv/SoloTraining',
+    year: '2025',
+  },
+  {
     id: 'inkdesk',
     name: 'InkDesk',
     description: 'SaaS platform for tattoo artists. WhatsApp automation, intelligent scheduling, and client management. Reduces no-shows by 60%.',
     tags: ['Next.js', 'Supabase', 'WhatsApp API', 'Evolution API', 'TypeScript'],
-    link: '#',
     year: '2025',
   },
   {
@@ -50,7 +57,7 @@ export const PROJECTS: Project[] = [
     name: 'Pixel Researches',
     description: 'Science & tech Instagram page powered by an autonomous AI content pipeline. Automated research, writing, and publishing.',
     tags: ['Claude AI', 'n8n', 'Python', 'Instagram API', 'Agents'],
-    link: 'https://instagram.com/pixelresearches',
+    link: 'https://github.com/jpazv/pixel-news',
     year: '2024',
   },
 ]

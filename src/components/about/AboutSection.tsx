@@ -185,7 +185,7 @@ export default function AboutSection() {
             <div style={{
               padding: 'clamp(1rem, 2.5vw, 1.5rem)',
               display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(min(150px, 100%), 1fr))',
               gap: 'clamp(1rem, 2vw, 1.5rem)',
             }}>
               {STACK.map((group, gi) => (
