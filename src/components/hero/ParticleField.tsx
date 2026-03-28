@@ -46,8 +46,8 @@ export default function ParticleField() {
     const { emergence, scale, speed, detail } = PARAMS
     const st = time * speed
 
-    // Decay burst: 3.2 → 1.0 over ~120 frames
-    if (burstPhase > 1.0) burstPhase = Math.max(1.0, burstPhase - 0.018)
+    // Decay burst: 3.2 → 1.0 over ~180 frames
+    if (burstPhase > 1.0) burstPhase = Math.max(1.0, burstPhase - 0.012)
 
     const c1 = Math.cos(st * 0.12), s1 = Math.sin(st * 0.12)
     const c2 = Math.cos(st * 0.08), s2 = Math.sin(st * 0.08)
