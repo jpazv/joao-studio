@@ -27,6 +27,7 @@ function CameraScroll() {
 
 export default function HeroCanvas() {
   const [dpr, setDpr] = useState(1)
+  const [visible, setVisible] = useState(false)
 
   useEffect(() => {
     const onScroll = () => {
@@ -34,7 +35,14 @@ export default function HeroCanvas() {
       scroll.progress = totalScrollable > 0 ? Math.min(window.scrollY / totalScrollable, 1) : 0
     }
     window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
+
+    // Delay void appearance so text fades in first
+    const t = setTimeout(() => setVisible(true), 900)
+
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      clearTimeout(t)
+    }
   }, [])
 
   return (
@@ -43,6 +51,8 @@ export default function HeroCanvas() {
         inset: 0,
         zIndex: 0,
         pointerEvents: 'none',
+        opacity: visible ? 1 : 0,
+        transition: 'opacity 1.2s cubic-bezier(0.16,1,0.3,1)',
       }}
     >
       <Canvas
