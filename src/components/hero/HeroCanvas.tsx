@@ -16,10 +16,8 @@ function CameraScroll() {
   const { camera } = useThree()
 
   useFrame(() => {
-    // Enter the void: z=7 → z=-60 over the entire page scroll.
-    // z=7 → z=0
-    const targetZ = 7 - scroll.progress * 7
-    camera.position.z += (targetZ - camera.position.z) * 0.04
+    const targetZ = 5.5 - scroll.progress * 5.5
+    camera.position.z += (targetZ - camera.position.z) * 0.03
   })
 
   return null
@@ -58,7 +56,7 @@ export default function HeroCanvas() {
       <Canvas
         frameloop="always"
         dpr={dpr}
-        camera={{ position: [0, 0, 7], fov: 60 }}
+        camera={{ position: [0, 0, 5.5], fov: 60 }}
         gl={{
           antialias: false,
           powerPreference: 'high-performance',

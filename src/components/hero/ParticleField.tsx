@@ -9,7 +9,7 @@ extend({ UnrealBloomPass })
 
 const COUNT = 8000
 
-const PARAMS = { emergence: 0.6, scale: 3.5, speed: 0.8, detail: 4 }
+const PARAMS = { emergence: 0.32, scale: 2.2, speed: 0.8, detail: 4 }
 
 // Burst phase: starts at 3.2 (particles form huge sphere), decays to 1 (normal size)
 // Resets each module load (page load), decays over ~120 frames ≈ 2s at 60fps
