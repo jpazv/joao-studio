@@ -49,8 +49,15 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: y mandatory;
   overflow-x: clip;
   max-width: 100%;
+}
+
+/* Each section snaps into view */
+section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
 }
 
 body {
