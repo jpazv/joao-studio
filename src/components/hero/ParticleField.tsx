@@ -11,15 +11,15 @@ const COUNT = 8000
 
 const PARAMS = { emergence: 0.32, scale: 2.2, speed: 0.8, detail: 4 }
 
-// Burst phase: starts at 3.2 (particles form huge sphere), decays to 1 (normal size)
-// Resets each module load (page load), decays over ~120 frames ≈ 2s at 60fps
+// Spring-damped burst: starts at 3.2, oscillates naturally to rest at 1.0
 let burstPhase = 3.2
+let burstVel   = 0.0
 
 export default function ParticleField() {
   const pointsRef = useRef<THREE.Points>(null)
 
   const { inclinations, azimuths, posArr, colArr } = useMemo(() => {
-    burstPhase = 3.2 // reset on mount
+    burstPhase = 3.2; burstVel = 0.0 // reset on mount
     const golden = 2.3999632297
     const inclinations = new Float32Array(COUNT)
     const azimuths = new Float32Array(COUNT)
@@ -46,8 +46,9 @@ export default function ParticleField() {
     const { emergence, scale, speed, detail } = PARAMS
     const st = time * speed
 
-    // Decay burst: 3.2 → 1.0 over ~120 frames
-    if (burstPhase > 1.0) burstPhase = Math.max(1.0, burstPhase - 0.018)
+    // Spring-damped decay toward 1.0 — settles with the wave rhythm, no hard stop
+    burstVel  = (burstVel + (1.0 - burstPhase) * 0.016) * 0.93
+    burstPhase += burstVel
 
     const c1 = Math.cos(st * 0.12), s1 = Math.sin(st * 0.12)
     const c2 = Math.cos(st * 0.08), s2 = Math.sin(st * 0.08)
