@@ -11,15 +11,16 @@ const COUNT = 8000
 
 const PARAMS = { emergence: 0.6, scale: 3.5, speed: 0.8, detail: 4 }
 
-// Burst phase: starts tiny (0.12 = black hole), grows to 1.0 after text appears
-// Growth begins at ~1.4s so text fades in first
-let burstPhase = 0.12
+// Spring explosion: sphere forms, overshoots screen, snaps back like a slingshot
+let burstPhase = 0.0
+let burstVel   = 0.0
+let burstReady = false
 
 export default function ParticleField() {
   const pointsRef = useRef<THREE.Points>(null)
 
   const { inclinations, azimuths, posArr, colArr } = useMemo(() => {
-    burstPhase = 0.12 // reset on mount — starts as tiny black hole
+    burstPhase = 0.0; burstVel = 0.0; burstReady = false // reset on mount
     const golden = 2.3999632297
     const inclinations = new Float32Array(COUNT)
     const azimuths = new Float32Array(COUNT)
@@ -28,10 +29,10 @@ export default function ParticleField() {
     for (let i = 0; i < COUNT; i++) {
       inclinations[i] = Math.acos(1.0 - 2.0 * (i + 0.5) / COUNT)
       azimuths[i] = golden * i
-      // start tight at center — explodes outward after text appears
-      posArr[i * 3]     = (Math.random() - 0.5) * 0.2
-      posArr[i * 3 + 1] = (Math.random() - 0.5) * 0.2
-      posArr[i * 3 + 2] = (Math.random() - 0.5) * 0.2
+      // start scattered near center
+      posArr[i * 3]     = (Math.random() - 0.5) * 0.5
+      posArr[i * 3 + 1] = (Math.random() - 0.5) * 0.5
+      posArr[i * 3 + 2] = (Math.random() - 0.5) * 0.5
     }
     return { inclinations, azimuths, posArr, colArr }
   }, [])
@@ -46,8 +47,12 @@ export default function ParticleField() {
     const { emergence, scale, speed, detail } = PARAMS
     const st = time * speed
 
-    // Text fades in 0.3–1.5s, then explosion begins growing to fill hero section
-    if (burstPhase < 1.0 && time > 1.4) burstPhase = Math.min(1.0, burstPhase + 0.007)
+    // Spring physics: kick at 0.5s, overshoot screen, snap back to 1.0
+    if (time > 0.5 && !burstReady) { burstVel = 0.075; burstReady = true }
+    if (burstReady) {
+      burstVel  = (burstVel + (1.0 - burstPhase) * 0.042) * 0.81
+      burstPhase = Math.max(0, burstPhase + burstVel)
+    }
 
     const c1 = Math.cos(st * 0.12), s1 = Math.sin(st * 0.12)
     const c2 = Math.cos(st * 0.08), s2 = Math.sin(st * 0.08)
@@ -80,8 +85,8 @@ export default function ParticleField() {
       const ty = ry * breath
       const tz = rz * breath
 
-      // Hold tight until explosion starts, then rush outward
-      const lerpSpeed = time < 1.4 ? 0.002 : burstPhase < 1.0 ? 0.13 : 0.08
+      // Slow drift before kick, fast during spring
+      const lerpSpeed = !burstReady ? 0.003 : 0.11
       const i3 = i * 3
       posArr[i3]     += (tx - posArr[i3])     * lerpSpeed
       posArr[i3 + 1] += (ty - posArr[i3 + 1]) * lerpSpeed
