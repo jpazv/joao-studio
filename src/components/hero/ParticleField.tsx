@@ -46,8 +46,8 @@ export default function ParticleField() {
     const { emergence, scale, speed, detail } = PARAMS
     const st = time * speed
 
-    // Decay burst: 3.2 → 1.0 over ~180 frames
-    if (burstPhase > 1.0) burstPhase = Math.max(1.0, burstPhase - 0.012)
+    // Wait for canvas to be visible (~1s), then explode, then contract
+    if (burstPhase > 1.0 && time > 1.6) burstPhase = Math.max(1.0, burstPhase - 0.012)
 
     const c1 = Math.cos(st * 0.12), s1 = Math.sin(st * 0.12)
     const c2 = Math.cos(st * 0.08), s2 = Math.sin(st * 0.08)
@@ -80,8 +80,8 @@ export default function ParticleField() {
       const ty = ry * breath
       const tz = rz * breath
 
-      // Lerp current → target — faster during burst explosion
-      const lerpSpeed = burstPhase > 1.0 ? 0.14 : 0.08
+      // Hold at center until canvas is visible, then explode outward
+      const lerpSpeed = time < 1.0 ? 0.001 : burstPhase > 1.0 ? 0.14 : 0.08
       const i3 = i * 3
       posArr[i3]     += (tx - posArr[i3])     * lerpSpeed
       posArr[i3 + 1] += (ty - posArr[i3 + 1]) * lerpSpeed

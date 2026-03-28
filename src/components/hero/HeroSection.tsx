@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 
@@ -16,6 +17,14 @@ const enter = (delay = 0) => ({
 })
 
 export default function HeroSection() {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'r' || e.key === 'R') window.location.reload()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
+
   return (
     <section
       id="hero"
@@ -152,25 +161,6 @@ export default function HeroSection() {
         </motion.div>
       </motion.div>
       </div>
-
-      {/* Secret replay button — visible only on hover, bottom-right */}
-      <button
-        onClick={() => window.location.reload()}
-        title="replay"
-        style={{
-          position: 'absolute', bottom: '2rem', right: '2rem', zIndex: 10,
-          background: 'none', border: 'none', cursor: 'pointer',
-          opacity: 0, transition: 'opacity 0.4s',
-          padding: '8px',
-        }}
-        onMouseEnter={e => (e.currentTarget.style.opacity = '0.5')}
-        onMouseLeave={e => (e.currentTarget.style.opacity = '0')}
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.8)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-          <path d="M3 3v5h5" />
-        </svg>
-      </button>
 
       {/* Scroll cue */}
       <motion.div
